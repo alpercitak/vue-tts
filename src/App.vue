@@ -1,20 +1,25 @@
 <template>
   <div class="content">
-    <select v-model="selectedVoice" class="border rounded-md p-2 mb-3 w-full">
-      <option v-for="voice in voices" :key="voice.name" :value="voice.name">{{ voice.name }} ({{ voice.lang }})</option>
-    </select>
-    <textarea v-model="text" placeholder="Type something to speak..." rows="4"></textarea>
-    <button @click="speak" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">🔊 Speak</button>
+    <n-select v-model:value="selectedVoice" :options="computedVoiceOptions" />
+    <n-input v-model:value="text" type="textarea" />
+    <n-button @click="speak" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">🔊 Speak</n-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { NButton, NInput, NSelect } from 'naive-ui';
 
 const voices = ref<Array<SpeechSynthesisVoice>>([]);
 const selectedVoice = ref<string>('');
-
 const text = ref<string>('Hello, welcome to Vue text to speech!');
+
+const computedVoiceOptions = computed<Array<{ label: string; value: string }>>(() =>
+  voices.value.map((voice) => ({
+    label: `${voice.name} (${voice.lang})`,
+    value: voice.name,
+  }))
+);
 
 window.speechSynthesis.onvoiceschanged = () => {
   voices.value = window.speechSynthesis.getVoices();
@@ -41,21 +46,8 @@ function speak() {
 <style scoped>
 .content {
   display: flex;
-  min-height: 100vh;
-  line-height: 1.1;
-  text-align: center;
+  gap: 1rem;
+  padding: 1rem;
   flex-direction: column;
-  justify-content: center;
-}
-
-.content h1 {
-  font-size: 3.6rem;
-  font-weight: 700;
-}
-
-.content p {
-  font-size: 1.2rem;
-  font-weight: 400;
-  opacity: 0.5;
 }
 </style>
