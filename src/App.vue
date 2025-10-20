@@ -11,8 +11,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const voices = ref([]);
-const selectedVoice = ref('');
+const voices = ref<Array<SpeechSynthesisVoice>>([]);
+const selectedVoice = ref<string>('');
 
 const text = ref<string>('Hello, welcome to Vue text to speech!');
 
